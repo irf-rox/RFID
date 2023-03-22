@@ -14,12 +14,9 @@ void setup() {
   Serial.begin(9600);                                            // Initialize serial communications with the PC
   SPI.begin();                                                  // Init SPI bus
   mfrc522.PCD_Init();                                          // Init MFRC522 card
-   //shows in serial that it is ready to read
 }
 
-
 void loop() {
-
   // Prepare key - all keys are set to FFFFFFFFFFFFh at chip delivery from the factory.
   MFRC522::MIFARE_Key key;
   for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;
@@ -69,7 +66,6 @@ void loop() {
   Serial.print(" ");
 
   //Get license plate number
-
   byte buffer2[18];
   block = 1;
 
