@@ -129,6 +129,6 @@ def f1():
     button = customtkinter.CTkButton(master=frame_1, text="Sign-Up here", command=sup(frame_1.destroy,f3))
     button.place(relx=0.5, rely=0.58)
 
-f1()
+f1() #function call
 root.mainloop()
 #End of code
