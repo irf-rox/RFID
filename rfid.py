@@ -1,5 +1,3 @@
-
-
 from tkinter import *
 import customtkinter
 import mysql.connector as mysql
@@ -19,11 +17,13 @@ def sup(*funcs):
 
     return combined_func
 
-mydb=mysql.connect(host="localhost",username="",password="")
+mydb = mysql.connect(host="localhost",user="root",password="root")
 cursor=mydb.cursor()
-cursor.execute("create database rfid")
-cursor.execute("create table user1(name varchar2(20),id varchar2(20),password varchar2(20))")
-cursor.execute("create table vehicle(name varchar2(20),vehicle_num varchar2(20))")
+cursor.execute("create database if not exists rfid")
+cursor.execute("use rfid")
+
+cursor.execute("create table if not exists user1(name varchar(20),id varchar(20),password varchar(20))")
+cursor.execute("create table if not exists vehicle(name varchar(20),vehicle_num varchar(20))")
 
 customtkinter.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -88,17 +88,14 @@ def f3():
                                        command=sup(frame_3.destroy, f4))
     button_1.place(relx=0.4, rely=0.45)
 
-    '''button_2 = customtkinter.CTkButton(master=frame_3, text="Load Tag", font=("book antiqua", 30),
-                                       command=sup(frame_3.destroy, f6))
-    button_2.place(relx=0.3, rely=0.45)'''
-
     button = customtkinter.CTkButton(master=frame_3, text="Log-Out", command=sup(frame_3.destroy, f1))
     button.place(relx=0.47, rely=0.8)
 
 def f2():
     def check():
         if (entry_3x.get()==entry_4x.get()):
-            cursor.execute("insert into user1 values(name,user_id,passw)")
+            cursor.execute("insert into user1 values('{}','{}','{}')".format(entry_1x.get(), entry_2x.get(), entry_3x.get()))
+            mydb.commit()
             f3()
         else:
             messagebox.showerror('Error', "Passwords don't match")
@@ -111,16 +108,18 @@ def f2():
     label_1 = customtkinter.CTkLabel(master=frame_2, justify=customtkinter.LEFT, text="Name :")
     label_1.place(rely=0.3, relx=0.09)
 
-    entry_1 = customtkinter.CTkEntry(master=frame_2, width=250)
-    entry_1.place(rely=0.3, relx=0.25)
-    name=entry_1.get()
+    global entry_1x
+
+    entry_1x = customtkinter.CTkEntry(master=frame_2, width=250)
+    entry_1x.place(rely=0.3, relx=0.25)
 
     label_2 = customtkinter.CTkLabel(master=frame_2, justify=customtkinter.LEFT, text="User ID:")
     label_2.place(rely=0.4, relx=0.09)
 
-    entry_2 = customtkinter.CTkEntry(master=frame_2, width=250)
-    entry_2.place(rely=0.4, relx=0.25)
-    user_id=entry_2.get()
+    global entry_2x
+
+    entry_2x = customtkinter.CTkEntry(master=frame_2, width=250)
+    entry_2x.place(rely=0.4, relx=0.25)
 
     label_3 = customtkinter.CTkLabel(master=frame_2, justify=customtkinter.LEFT, text="Password :")
     label_3.place(rely=0.5, relx=0.09)
@@ -164,6 +163,6 @@ def f1():
     button = customtkinter.CTkButton(master=frame_1, text="Sign-Up here", command=sup(frame_1.destroy, f2))
     button.place(relx=0.5, rely=0.58)
 
-
+mydb.commit()
 f1()  # function call
 root.mainloop()
