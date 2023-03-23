@@ -7,8 +7,8 @@ from tkinter import messagebox
 from functools import partial
 import os
 from tkinter.filedialog import askopenfilename
+import serial
 import csv
-
 
 def sup(*funcs):
     def combined_func(*args, **kwargs):
@@ -89,6 +89,14 @@ def f3():
     button.place(relx=0.47, rely=0.8)
 
 def f2():
+    def check():
+        if (entry_3x.get()==entry_4x.get()):
+            f3()
+        else:
+            messagebox.showerror('Error', "Passwords don't match")
+            frame_2.destroy()
+            f2()
+            
     frame_2 = customtkinter.CTkFrame(master=root)
     frame_2.pack(pady=20, padx=60, fill="both", expand=True)
 
@@ -109,26 +117,21 @@ def f2():
     label_3 = customtkinter.CTkLabel(master=frame_2, justify=customtkinter.LEFT, text="Password :")
     label_3.place(rely=0.5, relx=0.09)
 
-    entry_3 = customtkinter.CTkEntry(master=frame_2, width=250)
-    entry_3.place(rely=0.5, relx=0.25)
-    pass1=entry_3.get()
+    global entry_3x
+    entry_3x = customtkinter.CTkEntry(master=frame_2, width=250)
+    entry_3x.place(rely=0.5, relx=0.25)
 
     label_4 = customtkinter.CTkLabel(master=frame_2, justify=customtkinter.LEFT, text="Re-enter password :")
     label_4.place(rely=0.6, relx=0.09)
 
-    entry_4 = customtkinter.CTkEntry(master=frame_2, width=250)
-    entry_4.place(rely=0.6, relx=0.25)
-    pass2=entry_4.get()
+    global entry_4x
+    entry_4x = customtkinter.CTkEntry(master=frame_2, width=250)
+    entry_4x.place(rely=0.6, relx=0.25)
 
-
-    button = customtkinter.CTkButton(master=frame_2, text="Create account", command=sup(frame_2.destroy, check(pass1,pass2)))
+    button = customtkinter.CTkButton(master=frame_2, text="Create account", command=sup(check,frame_2.destroy))
     button.place(rely=0.8, relx=0.30)
 
-def check(pass1,pass2):
-    if (pass1!=pass2):
-        pass
-    else:
-        f2()
+
 
 def f1():
     frame_1 = customtkinter.CTkFrame(master=root)
