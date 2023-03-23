@@ -111,8 +111,6 @@ void loop() {
     return;
   } else Serial.println(F("MIFARE_Write() success: "));
 
-
-  Serial.println(" ");
   mfrc522.PICC_HaltA();       // Halt PICC
   mfrc522.PCD_StopCrypto1();  // Stop encryption on PCD
 }
