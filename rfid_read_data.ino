@@ -1,22 +1,20 @@
 #include <SPI.h>
 #include <MFRC522.h>
 
-#define RST_PIN         9            // Configurable, see typical pin layout above
+#define RST_PIN         9           // Configurable, see typical pin layout above
 #define SS_PIN          10          // Configurable, see typical pin layout above
 
 MFRC522 mfrc522(SS_PIN, RST_PIN);   // Create MFRC522 instance
-int pos1 = -1;          //some variables to store read values
-int pos2 = -1;
-char lic[100];
-char name[100];  
 
 void setup() {
-  Serial.begin(9600);                                            // Initialize serial communications with the PC
+  Serial.begin(9600);                                           // Initialize serial communications with the PC
   SPI.begin();                                                  // Init SPI bus
-  mfrc522.PCD_Init();                                          // Init MFRC522 card
+  mfrc522.PCD_Init();                                              // Init MFRC522 card
+  //Serial.println(F("Read personal data on a MIFARE PICC:"));    //shows in serial that it is ready to read
 }
 
 void loop() {
+
   // Prepare key - all keys are set to FFFFFFFFFFFFh at chip delivery from the factory.
   MFRC522::MIFARE_Key key;
   for (byte i = 0; i < 6; i++) key.keyByte[i] = 0xFF;
@@ -36,12 +34,20 @@ void loop() {
     return;
   }
 
+  //Serial.println(F("**Card Detected:**"));
+
+  mfrc522.PICC_DumpDetailsToSerial(&(mfrc522.uid)); //dump some details about the card
+
+  //mfrc522.PICC_DumpToSerial(&(mfrc522.uid));      //uncomment this to see all blocks in hex
+
+  //Serial.print(F("Name: "));
+
   byte buffer1[18];
 
   block = 4;
   len = 18;
 
-  //Get name
+//1st Read
   status = mfrc522.PCD_Authenticate(MFRC522::PICC_CMD_MF_AUTH_KEY_A, 4, &key, &(mfrc522.uid)); //line 834 of MFRC522.cpp file
   if (status != MFRC522::STATUS_OK) {
     Serial.print(F("Authentication failed: "));
@@ -56,16 +62,18 @@ void loop() {
     return;
   }
 
-  while(Serial.available()&&pos1<100) lic[++pos1]=Serial.read();
-
-  //Print Name
+  //PRINT lic no
   for (uint8_t i = 0; i < 16; i++)
   {
+    if (buffer1[i] != 32)
+    {
       Serial.write(buffer1[i]);
+    }
   }
   Serial.print(" ");
 
-  //Get license plate number
+  //get name
+
   byte buffer2[18];
   block = 1;
 
@@ -83,14 +91,15 @@ void loop() {
     return;
   }
 
-  while(Serial.available()&&pos2<100) name[++pos2]=Serial.read();
-
-  //PRINT license plate number
+  //PRINT NAME
   for (uint8_t i = 0; i < 16; i++) {
     Serial.write(buffer2[i] );
   }
 
-  delay(50); //change value if you want to read cards faster
+
+  Serial.println(F("\n"));
+
+  delay(10); //change value if you want to read cards faster
 
   mfrc522.PICC_HaltA();
   mfrc522.PCD_StopCrypto1();
