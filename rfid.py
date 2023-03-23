@@ -1,3 +1,5 @@
+
+
 from tkinter import *
 import customtkinter
 import mysql.connector as mysql
@@ -17,6 +19,11 @@ def sup(*funcs):
 
     return combined_func
 
+mydb=mysql.connect(host="localhost",username="",password="")
+cursor=mydb.cursor()
+cursor.execute("create database rfid")
+cursor.execute("create table user1(name varchar2(20),id varchar2(20),password varchar2(20))")
+cursor.execute("create table vehicle(name varchar2(20),vehicle_num varchar2(20))")
 
 customtkinter.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -91,6 +98,7 @@ def f3():
 def f2():
     def check():
         if (entry_3x.get()==entry_4x.get()):
+            cursor.execute("insert into user1 values(name,user_id,passw)")
             f3()
         else:
             messagebox.showerror('Error', "Passwords don't match")
@@ -112,7 +120,7 @@ def f2():
 
     entry_2 = customtkinter.CTkEntry(master=frame_2, width=250)
     entry_2.place(rely=0.4, relx=0.25)
-    id=entry_2.get()
+    user_id=entry_2.get()
 
     label_3 = customtkinter.CTkLabel(master=frame_2, justify=customtkinter.LEFT, text="Password :")
     label_3.place(rely=0.5, relx=0.09)
@@ -120,6 +128,7 @@ def f2():
     global entry_3x
     entry_3x = customtkinter.CTkEntry(master=frame_2, width=250)
     entry_3x.place(rely=0.5, relx=0.25)
+    passw=entry_3x.get()
 
     label_4 = customtkinter.CTkLabel(master=frame_2, justify=customtkinter.LEFT, text="Re-enter password :")
     label_4.place(rely=0.6, relx=0.09)
@@ -130,6 +139,8 @@ def f2():
 
     button = customtkinter.CTkButton(master=frame_2, text="Create account", command=sup(check,frame_2.destroy))
     button.place(rely=0.8, relx=0.30)
+
+    
 
 
 
@@ -153,9 +164,6 @@ def f1():
     button = customtkinter.CTkButton(master=frame_1, text="Sign-Up here", command=sup(frame_1.destroy, f2))
     button.place(relx=0.5, rely=0.58)
 
-'''mydb=mysql.connect(host="localhost",username="",password="")
-cursor=mydb.cursor()
-cursor.execute("create database rfid")
-cursor.execute("create table user1(name varchar2(20),id varchar2(20,password varchar2(20))")'''
+
 f1()  # function call
 root.mainloop()
