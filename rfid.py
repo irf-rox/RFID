@@ -9,6 +9,7 @@ import os
 from tkinter.filedialog import askopenfilename
 import serial
 import csv
+from multiprocessing import Process
 
 def sup(*funcs):
     def combined_func(*args, **kwargs):
@@ -23,7 +24,7 @@ cursor.execute("create database if not exists rfid")
 cursor.execute("use rfid")
 
 cursor.execute("create table if not exists user1(name varchar(20),id varchar(20),password varchar(20))")
-cursor.execute("create table if not exists vehicle(name varchar(20),vehicle_num varchar(20))")
+cursor.execute("create table if not exists vehicle(name varchar(20),vehicle_num varchar(20) primary key)")
 
 customtkinter.set_appearance_mode("dark")  # Modes: "System" (standard), "Dark", "Light"
 customtkinter.set_default_color_theme("blue")  # Themes: "blue" (standard), "green", "dark-blue"
@@ -33,25 +34,6 @@ root.geometry('1280x680')
 root.resizable(width='False', height='False')
 root.title("Vehicle Details Detector Pro")
 
-
-def f8():
-    frame_8 = customtkinter.CTkFrame(master=root)
-    frame_8.pack(pady=20, padx=60, fill="both", expand=True)
-
-    button_1 = customtkinter.CTkButton(master=frame_8, text="Done", command=sup(frame_8.destroy, f3))
-    button_1.place(relx=0.45, rely=0.8)
-
-
-def f7():
-    frame_7 = customtkinter.CTkFrame(master=root)
-    frame_7.pack(pady=20, padx=60, fill="both", expand=True)
-
-    label_5 = customtkinter.CTkLabel(master=frame_7, justify=customtkinter.LEFT, text="Tap your RFID tag now",
-                                     font=("Book Antiqua", 50))
-    label_5.place(relx=0.15, rely=0.3)
-
-    button_1 = customtkinter.CTkButton(master=frame_7, text="Back", command=sup(frame_7.destroy, f3))
-    button_1.place(relx=0.86, rely=0.04)
 def f5():
     frame_5 = customtkinter.CTkFrame(master=root)
     frame_5.pack(pady=20, padx=60, fill="both", expand=True)
@@ -67,25 +49,41 @@ def f5():
     button_5 = customtkinter.CTkButton(master=frame_5, text="FINISH", command=sup(frame_5.destroy, f3))
     button_5.place(relx=0.45, rely=0.85)
 
+def rf_read():
+    global l
+    l=[]
+    ser = serial.Serial('COM6', 9600)
+    l=[]
+    while True:
+        data = ser.readline().decode().strip()
+        l.append(data.split())
+        x=(len(l)+1)
+        if x%6==0:
+            print("Vehicle number : ",l[x-2][0],"\nOwner Name : ",l[x-2][1])
+            cursor.execute("insert ignore into vehicle values('{}','{}')".format(l[x-2][1], l[x-2][0]))
+            mydb.commit()
+        if x==30:
+            break
 
 def f4():
+    global frame_4
     frame_4 = customtkinter.CTkFrame(master=root)
     frame_4.pack(pady=20, padx=60, fill="both", expand=True)
 
-    label_5 = customtkinter.CTkLabel(master=frame_4, justify=customtkinter.LEFT, text="Scanning for Vehicle",
-                                     font=("Book Antiqua", 50))
+    label_5 = customtkinter.CTkLabel(master=frame_4, justify=customtkinter.LEFT, text="Ready to Scan", font=("Book Antiqua", 50))
     label_5.place(relx=0.15, rely=0.3)
 
     button_5 = customtkinter.CTkButton(master=frame_4, command=sup(frame_4.destroy, f3), text="Back")
     button_5.place(relx=0.85, rely=0.05)
 
+    button_6 = customtkinter.CTkButton(master=frame_4, text="Start Scanning", command=sup(rf_read))
+    button_6.place(relx=0.45, rely=0.5)
 
 def f3():
     frame_3 = customtkinter.CTkFrame(master=root)
     frame_3.pack(pady=20, padx=60, fill="both", expand=True)
 
-    button_1 = customtkinter.CTkButton(master=frame_3, text="Scan Tag", font=("book antiqua", 30),
-                                       command=sup(frame_3.destroy, f4))
+    button_1 = customtkinter.CTkButton(master=frame_3, text="Scan Tag", font=("book antiqua", 30),command=sup(frame_3.destroy, f4))
     button_1.place(relx=0.4, rely=0.45)
 
     button = customtkinter.CTkButton(master=frame_3, text="Log-Out", command=sup(frame_3.destroy, f1))
@@ -139,10 +137,6 @@ def f2():
     button = customtkinter.CTkButton(master=frame_2, text="Create account", command=sup(check,frame_2.destroy))
     button.place(rely=0.8, relx=0.30)
 
-    
-
-
-
 def f1():
     frame_1 = customtkinter.CTkFrame(master=root)
     frame_1.pack(pady=30, padx=60, fill="both", expand=True)
@@ -163,6 +157,5 @@ def f1():
     button = customtkinter.CTkButton(master=frame_1, text="Sign-Up here", command=sup(frame_1.destroy, f2))
     button.place(relx=0.5, rely=0.58)
 
-mydb.commit()
-f1()  # function call
+f1()
 root.mainloop()
