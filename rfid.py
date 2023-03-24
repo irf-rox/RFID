@@ -244,7 +244,7 @@ def f1():
     entry_2 = customtkinter.CTkEntry(master=frame_1, placeholder_text="PASSWORD", show="•", width=200)
     entry_2.place(relx=0.38, rely=0.44)
 
-    button = customtkinter.CTkButton(master=frame_1, text="LOGIN", command=sup(frame_1.destroy, f3))#chpwd))
+    button = customtkinter.CTkButton(master=frame_1, text="LOGIN", command=sup(chpwd))
     button.place(relx=0.35, rely=0.58)
 
     button = customtkinter.CTkButton(master=frame_1, text="Sign-Up here", command=sup(frame_1.destroy, f2))
