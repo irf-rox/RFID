@@ -87,9 +87,10 @@ This system can be placed at:
 
 3. **Upload the sketch**
 
-   * Open the `.ino` file in Arduino IDE
+   * Open the `rfid_write_data.ino` file in Arduino IDE
    * Choose the correct board and COM port
    * Upload the code
+   * Type in vehicle details and scan the RFID card to store them.
 
 4. **Test the system**
 
