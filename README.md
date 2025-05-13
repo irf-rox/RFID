@@ -76,8 +76,8 @@ This system can be placed at:
 1. **Clone this repository**
 
    ```bash
-   git clone https://github.com/irf-rox/RFID.git
-   cd RFID
+   git clone https://github.com/irf-rox/Moving-Vehicle-Details-Detection-using-RFID.git
+   cd Moving-Vehicle-Details-Detection-using-RFID
    ```
 
 2. **Connect the hardware**
@@ -102,10 +102,10 @@ This system can be placed at:
 ## 📁 Project Structure
 
 ```
-RFID/
+Moving-Vehicle-Details-Detection-using-RFID/
 ├── RFID_Vehicle_Detector.ino   # Main Arduino sketch
 ├── README.md                   # This documentation
-└── LICENSE                     # License info
+└── rfid.py                     # License info
 ```
 
 ---
@@ -136,10 +136,3 @@ Want to improve the system or integrate it into your smart city project? Feel fr
 
 ---
 
-## 📜 License
-
-This project is licensed under the [MIT License](LICENSE).
-
----
-
-If you'd like a wiring diagram or a cloud integration demo added to the repo, just let me know — I'd be happy to help you include that as well.
